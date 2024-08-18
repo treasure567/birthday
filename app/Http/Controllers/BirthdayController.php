@@ -13,7 +13,7 @@ class BirthdayController extends Controller
 {
 
     public static function sendBirthday() {
-        $today = Carbon::now()->format('m-d');
+        $today = Carbon::now()->format('n-j');
         $birthdays = Birthday::where('status', 'active')
             ->whereRaw("CONCAT(month, '-', day) = ?", [$today])
             ->where(function ($query) {
@@ -36,7 +36,7 @@ class BirthdayController extends Controller
                 'status' => 'sending',
             ]);
             try {
-                
+                send_birthday($birthday);
             } catch (\Exception $e) {
                 $birthday->update([
                     'status' => 'active',
@@ -52,7 +52,7 @@ class BirthdayController extends Controller
     public function save(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string'],
-            'picture' => ['required', 'mimes:png,jpg'],
+            'picture' => ['required', 'mimes:png,jpg,jpeg'],
             'month' => ['required', 'integer', 'min:1', 'max:12'],
             'day' => ['required', 'integer', 'min:1', 'max:31'],
             'whatsapp' => ['required', 'numeric'],
@@ -91,11 +91,11 @@ class BirthdayController extends Controller
             ]);
         }
         if (!$otp->verifyOtp($request->otp)) {
-            // return response()->json([
-            //     'status' => false,
-            //     'class' => 'error',
-            //     'message' => 'Invalid OTP Code Supplied'
-            // ]);
+            return response()->json([
+                'status' => false,
+                'class' => 'error',
+                'message' => 'Invalid OTP Code Supplied'
+            ]);
         }
         $bd = Birthday::where('whatsapp', $request->whatsapp)->first();
         $payload = $request->only((new Birthday())->getFillable());
