@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Birthday Form</h2>
+        <form id="birthdayForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+                <div id="nameError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="picture">Upload Picture</label>
+                <input type="file" id="picture" name="picture" accept="image/*" required>
+                <div id="pictureError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="month">Birth Month</label>
+                <select id="month" name="month" required>
+                    <option value="">Select Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <div id="monthError" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="day">Birth Day</label>
+                <select id="day" name="day" required>
+                    <option value="">Select Day</option>
+                </select>
+                <div id="dayError" class="error"></div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('month').addEventListener('change', function() {
+            const month = parseInt(this.value);
+            const daySelect = document.getElementById('day');
+            const daysInMonth = new Date(2024, month, 0).getDate();
+
+            daySelect.innerHTML = '<option value="">Select Day</option>';
+            for (let i = 1; i <= daysInMonth; i++) {
+                daySelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+        });
+
+        document.getElementById('birthdayForm').addEventListener('submit', function(event) {
+            const name = document.getElementById('name').value.trim();
+            const picture = document.getElementById('picture').files.length;
+            const month = document.getElementById('month').value;
+            const day = document.getElementById('day').value;
+
+            let valid = true;
+
+            if (!name) {
+                document.getElementById('nameError').textContent = 'Name is required';
+                valid = false;
+            } else {
+                document.getElementById('nameError').textContent = '';
+            }
+
+            if (picture === 0) {
+                document.getElementById('pictureError').textContent = 'Picture is required';
+                valid = false;
+            } else {
+                document.getElementById('pictureError').textContent = '';
+            }
+
+            if (!month) {
+                document.getElementById('monthError').textContent = 'Month is required';
+                valid = false;
+            } else {
+                document.getElementById('monthError').textContent = '';
+            }
+
+            if (!day) {
+                document.getElementById('dayError').textContent = 'Day is required';
+                valid = false;
+            } else {
+                document.getElementById('dayError').textContent = '';
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
