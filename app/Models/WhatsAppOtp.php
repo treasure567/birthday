@@ -37,12 +37,11 @@ class WhatsAppOtp extends Model
     public function sendWhatsAppOtp($msg, $whatsapp = null) : bool {
         $whatsapp = $whatsapp ?? $this->whatsapp;
         $otp = generate_string(6, 'numeric');
-        info($otp);
         $msg = str_replace('{{otp}}', $otp, $msg);
         if (trenalyze($whatsapp, $msg)) {
             $this->resetOtp($otp);
             return true;
         }
-        return true;
+        return false;
     }
 }
