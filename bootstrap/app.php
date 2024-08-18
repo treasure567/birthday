@@ -18,6 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('send:birthday')->name('send_birthday')->daily();
+        $schedule->command('send:birthday')->name('send_birthday')->everyMinute();
     })
     ->create();
