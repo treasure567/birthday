@@ -223,7 +223,7 @@
                 </select>
             </div>
 
-            <label for="whatsapp">WhatsApp Number:</label>
+            <label for="whatsapp">WhatsApp Number: E.g <span style="color: red">2348157002782</span></label>
             <div class="input-group">
                 <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter WhatsApp number" required>
                 <button type="button" id="sendOtp">OTP</button>
@@ -233,8 +233,11 @@
             <input type="text" id="otp" name="otp" required>
 
             <button type="submit" id="submitButton">Submit</button>
+            <hr>
+            Built by <a href="https://treasureuvietobore.com">Treasure Uvietobore</a>
         </form>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -293,7 +296,7 @@
                 contentType: false,
                 success: function(response) {
                     showToast(`${response.message}`, `${response.class}`);
-                    // $form.trigger('reset');
+                    $form.trigger('reset');
                 },
                 error: function() {
                     showToast('Failed to submit the form. Please try again.', 'error');
@@ -304,7 +307,6 @@
             });
         });
 
-        // Show toast notification
         function showToast(message, type) {
             const toast = $('#toast');
             toast.removeClass('toast-success toast-error toast-info');
