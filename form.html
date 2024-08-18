@@ -8,75 +8,114 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
+
         .container {
-            background: #fff;
+            background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
             max-width: 400px;
-            width: 100%;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
         }
+
         label {
-            display: block;
-            margin-bottom: 5px;
             font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
         }
-        input[type="text"],
-        input[type="file"],
-        select {
-            width: 100%;
+
+        input[type="text"], input[type="file"], input[type="number"] {
+            width: calc(100% - 22px);
             padding: 10px;
-            margin-top: 5px;
+            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
-        button {
-            width: 100%;
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input[type="text"] {
+            width: calc(100% - 100px);
+            margin-right: 10px;
+        }
+
+        .input-group button {
             padding: 10px;
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
         }
-        button:hover {
-            background-color: #218838;
+
+        .input-group button:hover {
+            background-color: #0056b3;
         }
-        .error {
-            color: red;
-            margin-top: 5px;
-            font-size: 14px;
+
+        .date-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .date-group select {
+            width: 48%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Birthday Form</h2>
-        <form id="birthdayForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-                <div id="nameError" class="error"></div>
-            </div>
-            <div class="form-group">
-                <label for="picture">Upload Picture</label>
-                <input type="file" id="picture" name="picture" accept="image/*" required>
-                <div id="pictureError" class="error"></div>
-            </div>
-            <div class="form-group">
-                <label for="month">Birth Month</label>
+        <form id="birthdayForm" method="POST" action="/submit" enctype="multipart/form-data">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="picture">Upload Picture:</label>
+            <input type="file" id="picture" name="picture" accept="image/*" required>
+
+            <label for="birthDate">Date of Birth:</label>
+            <div class="date-group">
                 <select id="month" name="month" required>
-                    <option value="">Select Month</option>
+                    <option value="" disabled selected>Month</option>
                     <option value="1">January</option>
                     <option value="2">February</option>
                     <option value="3">March</option>
@@ -90,69 +129,52 @@
                     <option value="11">November</option>
                     <option value="12">December</option>
                 </select>
-                <div id="monthError" class="error"></div>
-            </div>
-            <div class="form-group">
-                <label for="day">Birth Day</label>
+
                 <select id="day" name="day" required>
-                    <option value="">Select Day</option>
+                    <option value="" disabled selected>Day</option>
+                    <!-- Days will be populated by JavaScript -->
                 </select>
-                <div id="dayError" class="error"></div>
             </div>
+
+            <label for="whatsapp">WhatsApp Number:</label>
+            <div class="input-group">
+                <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter WhatsApp number" required>
+                <button type="button" id="sendOtp">Send OTP</button>
+            </div>
+
+            <label for="otp">OTP Code:</label>
+            <input type="text" id="otp" name="otp" required>
+
             <button type="submit">Submit</button>
         </form>
     </div>
 
     <script>
+        // Populate the day dropdown based on the selected month
         document.getElementById('month').addEventListener('change', function() {
-            const month = parseInt(this.value);
+            const month = this.value;
             const daySelect = document.getElementById('day');
-            const daysInMonth = new Date(2024, month, 0).getDate();
-
-            daySelect.innerHTML = '<option value="">Select Day</option>';
+            daySelect.innerHTML = '<option value="" disabled selected>Day</option>';
+            const daysInMonth = new Date(2024, month, 0).getDate(); // 2024 is a leap year
             for (let i = 1; i <= daysInMonth; i++) {
                 daySelect.innerHTML += `<option value="${i}">${i}</option>`;
             }
         });
 
-        document.getElementById('birthdayForm').addEventListener('submit', function(event) {
-            const name = document.getElementById('name').value.trim();
-            const picture = document.getElementById('picture').files.length;
-            const month = document.getElementById('month').value;
-            const day = document.getElementById('day').value;
-
-            let valid = true;
-
-            if (!name) {
-                document.getElementById('nameError').textContent = 'Name is required';
-                valid = false;
+        // Send OTP button click event
+        document.getElementById('sendOtp').addEventListener('click', function() {
+            const whatsappNumber = document.getElementById('whatsapp').value;
+            if (whatsappNumber) {
+                alert(`OTP has been sent to ${whatsappNumber}`);
+                // Implement actual OTP sending logic here
+                this.textContent = 'Sent ✓';
+                this.disabled = true;
+                setTimeout(() => {
+                    this.textContent = 'Send OTP';
+                    this.disabled = false;
+                }, 3000); // Revert back to the original after 3 seconds
             } else {
-                document.getElementById('nameError').textContent = '';
-            }
-
-            if (picture === 0) {
-                document.getElementById('pictureError').textContent = 'Picture is required';
-                valid = false;
-            } else {
-                document.getElementById('pictureError').textContent = '';
-            }
-
-            if (!month) {
-                document.getElementById('monthError').textContent = 'Month is required';
-                valid = false;
-            } else {
-                document.getElementById('monthError').textContent = '';
-            }
-
-            if (!day) {
-                document.getElementById('dayError').textContent = 'Day is required';
-                valid = false;
-            } else {
-                document.getElementById('dayError').textContent = '';
-            }
-
-            if (!valid) {
-                event.preventDefault();
+                alert('Please enter a valid WhatsApp number.');
             }
         });
     </script>
