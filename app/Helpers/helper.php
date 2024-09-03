@@ -62,12 +62,12 @@ if (! function_exists('generate_message')) {
   function generate_message(Birthday $birthday, string $type = 'ai') {
     try {
       $today = Carbon::now()->format('l, F j, Y');
-      $prompt = "Create a birthday message for {$birthday->name}, who is celebrating today, {$today}. {$birthday->name} is a {$birthday->gender}. Mention that {$birthday->name} shares their birthday with famous persons celebrating today also mention the names of the famous persons also. Highlight how much they are valued by the Computer Science Department and express well wishes for many more years of success and celebration. Include a cheerful tone and wish them a fantastic day!. it's not a letter, so dont add sender name at the bottom";
+      $prompt = "Create a birthday message for {$birthday->name}, who is celebrating today, {$today}. {$birthday->name} is a {$birthday->gender}. Mention that {$birthday->name} shares their birthday with famous persons celebrating today also mention the names of the famous persons also. Also, mention some notable computer or technological history that is remarkable to their birthday. Highlight how much they are valued by the Computer Science Department and express well wishes for many more years of success and celebration. Include a cheerful tone and wish them a fantastic day!. it's not a letter, so dont add sender name at the bottom";
       $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
         'Content-Type' => 'application/json',
       ])->post('https://api.openai.com/v1/chat/completions', [
-        'model' => 'gpt-4o-mini',
+        'model' => 'gpt-4o',
         'messages' => [
           [
             'role' => 'system',
