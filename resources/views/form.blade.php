@@ -223,6 +223,7 @@
                 </select>
             </div>
 
+            
             <label for="whatsapp">WhatsApp Number: E.g <span style="color: red">2348157002782</span></label>
             <div class="input-group">
                 <input type="text" id="whatsapp" name="whatsapp" placeholder="Enter WhatsApp number" required>
@@ -284,7 +285,6 @@
             const $submitButton = $('#submitButton');
             const formData = new FormData(this);
             formData.append('_token', "{{ csrf_token() }}")
-            console.log(formData)
 
             $submitButton.text('Hang on...').prop('disabled', true).addClass('loading');
 
